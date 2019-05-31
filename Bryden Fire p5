@@ -1,0 +1,122 @@
+let system;
+let Thing;
+let Thing2;
+let Thing3;
+let Thing4;
+let Thing5;
+let Thing6;
+x = 0;
+Fireon = 0;
+
+function setup() {
+  createCanvas(720, 400);
+  system = new ParticleSystem(createVector(width *2 , height));
+  Thing = new ParticleSystem(createVector(width*2,height));
+  Thing2 = new ParticleSystem(createVector(width*2,height));
+  Thing3 = new ParticleSystem(createVector(width*2,height));
+  Thing4 = new ParticleSystem(createVector(width*2,height));
+  Thing5 = new ParticleSystem(createVector(width*2,height));
+  Thing6 = new ParticleSystem(createVector(width*2,height));
+}
+
+function draw() {
+  background(51);
+  system.addParticle();
+  system.run();
+  Thing.addParticle();
+  Thing.run();
+  Thing2.addParticle();
+  Thing2.run();
+  Thing3.addParticle();
+  Thing3.run();
+  Thing4.addParticle();
+  Thing4.run();
+  Thing5.addParticle();
+  Thing5.run();
+  Thing6.addParticle();
+  Thing6.run();
+}
+let Particle = function(position) {
+  this.acceleration = createVector(0, -0.05);
+  this.velocity = createVector(random(-1, 1), random(-1, 0));
+  this.position = position.copy();
+  this.lifespan = 255;
+};
+
+Particle.prototype.run = function() {
+  this.update();
+  this.display();
+};
+
+Particle.prototype.update = function(){
+  this.velocity.add(this.acceleration);
+  this.position.add(this.velocity);
+  this.lifespan -= 8;
+};
+
+Particle.prototype.display = function() {
+  noStroke();
+  colorMode(HSB);
+  var hue = (120-this.lifespan) * 0.5;
+  fill(hue, 255, 255, this.lifespan);
+  ellipse(this.position.x, this.position.y, 12, 12);
+  colorMode(RGB);
+  fill(139,69,19);
+  rect(125,125,150,50);
+};
+
+Particle.prototype.isDead = function(){
+  return this.lifespan < 0;
+};
+
+let ParticleSystem = function(position) {
+  this.origin = position.copy();
+  this.particles = [];
+};
+
+ParticleSystem.prototype.addParticle = function() {
+  this.particles.push(new Particle(this.origin));
+};
+
+ParticleSystem.prototype.run = function() {
+  for (let i = this.particles.length-1; i >= 0; i--) {
+    let p = this.particles[i];
+    p.run();
+    if (p.isDead()) {
+      this.particles.splice(i, 1);
+    }
+  }
+};
+function mousePressed(){
+  if (mouseY <= 175 && mouseIsPressed && mouseX <= 275 && mouseX >= 125 && mouseY >= 125){
+    if (Fireon == 0){
+    system = new ParticleSystem(createVector(140 , 135));
+    Thing = new ParticleSystem(createVector(180,135));
+    Thing2 = new ParticleSystem(createVector(230,135));
+    Thing3 = new ParticleSystem(createVector(260,135));
+    Fireon = 1;
+    }
+    else if (Fireon == 1){
+    system = new ParticleSystem(createVector(1000 , 135));
+    Thing = new ParticleSystem(createVector(1000,135));
+    Thing2 = new ParticleSystem(createVector(1000,135));
+    Thing3 = new ParticleSystem(createVector(1000,135));
+    Fireon = 0; 
+    }
+  }
+  else
+  {
+    if (x == 0){
+    Thing4 = new ParticleSystem(createVector(mouseX, mouseY));
+       x = 1;
+    }
+    else if (x == 1){
+      Thing5 = new ParticleSystem(createVector(mouseX, mouseY));
+      x = 2;
+    }
+    else if (x == 2){
+     Thing6 = new ParticleSystem(createVector(mouseX, mouseY));
+      x = 0;
+    }
+  }
+}
